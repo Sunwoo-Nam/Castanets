@@ -70,7 +70,7 @@ class FindTabHelper : public content::WebContentsObserver,
     return last_search_result_;
   }
 
-#if defined(OS_ANDROID)
+#if defined(OS_ANDROID) && !defined(CASTANETS)
   // Selects and zooms to the find result nearest to the point (x,y)
   // defined in find-in-page coordinates.
   void ActivateNearestFindResult(float x, float y);

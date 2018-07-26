@@ -141,7 +141,7 @@ void FindTabHelper::ActivateFindInPageResultForAccessibility() {
       current_find_request_id_);
 }
 
-#if defined(OS_ANDROID)
+#if defined(OS_ANDROID) && !defined(CASTANETS)
 void FindTabHelper::ActivateNearestFindResult(float x, float y) {
   if (!find_op_aborted_ && !find_text_.empty()) {
     web_contents()->ActivateNearestFindResult(x, y);

@@ -91,8 +91,10 @@ bool RendererDateTimePicker::OnMessageReceived(
     const IPC::Message& message) {
   bool handled = true;
   IPC_BEGIN_MESSAGE_MAP(RendererDateTimePicker, message)
+#if !defined(CASTANETS)
     IPC_MESSAGE_HANDLER(ViewMsg_ReplaceDateTime, OnReplaceDateTime)
     IPC_MESSAGE_HANDLER(ViewMsg_CancelDateTimeDialog, OnCancel)
+#endif
     IPC_MESSAGE_UNHANDLED(handled = false)
   IPC_END_MESSAGE_MAP()
   return handled;

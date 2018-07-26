@@ -610,7 +610,9 @@ void ContentViewCore::SelectPopupMenuItems(
       reinterpret_cast<RenderFrameHostImpl*>(selectPopupSourceFrame);
   DCHECK(rfhi);
   if (indices == NULL) {
+#if !defined(CASTANETS)
     rfhi->DidCancelPopupMenu();
+#endif
     return;
   }
 
@@ -620,7 +622,9 @@ void ContentViewCore::SelectPopupMenuItems(
   for (int i = 0; i < selected_count; ++i)
     selected_indices.push_back(indices_ptr[i]);
   env->ReleaseIntArrayElements(indices, indices_ptr, JNI_ABORT);
+#if !defined(CASTANETS)
   rfhi->DidSelectPopupMenuItems(selected_indices);
+#endif
 }
 
 WebContents* ContentViewCore::GetWebContents() const {

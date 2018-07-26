@@ -79,6 +79,7 @@ class WebContentsViewAndroid : public WebContentsView,
   // Backend implementation of RenderViewHostDelegateView.
   void ShowContextMenu(RenderFrameHost* render_frame_host,
                        const ContextMenuParams& params) override;
+#if !defined(CASTANETS)
   void ShowPopupMenu(RenderFrameHost* render_frame_host,
                      const gfx::Rect& bounds,
                      int item_height,
@@ -88,6 +89,7 @@ class WebContentsViewAndroid : public WebContentsView,
                      bool right_aligned,
                      bool allow_multiple_selection) override;
   void HidePopupMenu() override;
+#endif
   ui::OverscrollRefreshHandler* GetOverscrollRefreshHandler() const override;
   void StartDragging(const DropData& drop_data,
                      blink::WebDragOperationsMask allowed_ops,

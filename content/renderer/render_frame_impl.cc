@@ -1706,7 +1706,7 @@ bool RenderFrameImpl::OnMessageReceived(const IPC::Message& msg) {
     IPC_MESSAGE_HANDLER(FrameMsg_MixedContentFound, OnMixedContentFound)
     IPC_MESSAGE_HANDLER(FrameMsg_SetOverlayRoutingToken,
                         OnSetOverlayRoutingToken)
-#if defined(OS_ANDROID)
+#if defined(OS_ANDROID) && !defined(CASTANETS)
     IPC_MESSAGE_HANDLER(FrameMsg_ActivateNearestFindResult,
                         OnActivateNearestFindResult)
     IPC_MESSAGE_HANDLER(FrameMsg_GetNearestFindResult,
@@ -5941,7 +5941,7 @@ void RenderFrameImpl::OnMixedContentFound(
                             params.had_redirect, source_location);
 }
 
-#if defined(OS_ANDROID)
+#if defined(OS_ANDROID) && !defined(CASTANETS)
 void RenderFrameImpl::OnActivateNearestFindResult(int request_id,
                                                   float x,
                                                   float y) {

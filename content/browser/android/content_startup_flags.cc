@@ -28,6 +28,19 @@ void SetContentCommandLineFlags(bool single_process,
   base::CommandLine* parsed_command_line =
       base::CommandLine::ForCurrentProcess();
 
+#if defined(CASTANETS)
+  base::CommandLine::ForCurrentProcess()->AppendSwitch(switches::kNoSandbox);
+  base::CommandLine::ForCurrentProcess()->AppendSwitch(switches::kNoZygote);
+  base::CommandLine::ForCurrentProcess()->AppendSwitch(switches::kDisableGpu);
+  base::CommandLine::ForCurrentProcess()->AppendSwitch(switches::kDisableGpuCompositing);
+  base::CommandLine::ForCurrentProcess()->AppendSwitchASCII(switches::kNumRasterThreads,"4");
+  base::CommandLine::ForCurrentProcess()->AppendSwitchASCII(switches::kProcessType,
+                                                            switches::kRendererProcess);
+  base::CommandLine::ForCurrentProcess()->AppendSwitchASCII(switches::kRendererClientId,"2");
+  base::CommandLine::ForCurrentProcess()->AppendSwitchASCII(switches::kLang,"en-US");
+#endif
+
+
   if (single_process) {
     // Need to ensure the command line flag is consistent as a lot of chrome
     // internal code checks this directly, but it wouldn't normally get set when

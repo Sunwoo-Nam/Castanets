@@ -436,7 +436,7 @@ void FindRequestManager::RemoveFrame(RenderFrameHost* rfh) {
   }
 }
 
-#if defined(OS_ANDROID)
+#if defined(OS_ANDROID) && !defined (CASTANETS)
 void FindRequestManager::ActivateNearestFindResult(float x, float y) {
   if (current_session_id_ == kInvalidId)
     return;
@@ -752,9 +752,11 @@ void FindRequestManager::RemoveNearestFindResultPendingReply(
   activate_.pending_replies.erase(it);
   if (activate_.pending_replies.empty() &&
       CheckFrame(activate_.nearest_frame)) {
+#if !defined(CASTANETS)
     activate_.nearest_frame->Send(new FrameMsg_ActivateNearestFindResult(
         activate_.nearest_frame->GetRoutingID(),
         current_session_id_, activate_.x, activate_.y));
+#endif
   }
 }
 

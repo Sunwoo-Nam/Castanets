@@ -58,7 +58,7 @@ class CONTENT_EXPORT FindRequestManager {
   // called whenever a frame is discovered to no longer exist.
   void RemoveFrame(RenderFrameHost* rfh);
 
-#if defined(OS_ANDROID)
+#if defined(OS_ANDROID) && !defined(CASTANETS)
   // Selects and zooms to the find result nearest to the point (x, y), defined
   // in find-in-page coordinates.
   void ActivateNearestFindResult(float x, float y);

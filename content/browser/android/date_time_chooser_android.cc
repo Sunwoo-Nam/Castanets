@@ -55,12 +55,16 @@ DateTimeChooserAndroid::~DateTimeChooserAndroid() {
 void DateTimeChooserAndroid::ReplaceDateTime(JNIEnv* env,
                                              const JavaRef<jobject>&,
                                              jdouble value) {
+#if !defined(CASTANETS)
   host_->Send(new ViewMsg_ReplaceDateTime(host_->GetRoutingID(), value));
+#endif
 }
 
 void DateTimeChooserAndroid::CancelDialog(JNIEnv* env,
                                           const JavaRef<jobject>&) {
+#if !defined(CASTANETS)
   host_->Send(new ViewMsg_CancelDateTimeDialog(host_->GetRoutingID()));
+#endif
 }
 
 void DateTimeChooserAndroid::ShowDialog(

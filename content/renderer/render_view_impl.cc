@@ -1180,7 +1180,7 @@ bool RenderViewImpl::OnMessageReceived(const IPC::Message& message) {
     IPC_MESSAGE_HANDLER(PageMsg_AudioStateChanged, OnAudioStateChanged)
     IPC_MESSAGE_HANDLER(PageMsg_UpdateScreenInfo, OnUpdateScreenInfo)
 
-#if defined(OS_ANDROID)
+#if defined(OS_ANDROID) && !defined(CASTANETS)
     IPC_MESSAGE_HANDLER(ViewMsg_UpdateBrowserControlsState,
                         OnUpdateBrowserControlsState)
 #elif defined(OS_MACOSX)

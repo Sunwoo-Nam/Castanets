@@ -283,6 +283,7 @@ void WebContentsViewAndroid::ShowContextMenu(
     delegate_->ShowContextMenu(render_frame_host, params);
 }
 
+#if !defined(CASTANETS)
 void WebContentsViewAndroid::ShowPopupMenu(
     RenderFrameHost* render_frame_host,
     const gfx::Rect& bounds,
@@ -303,6 +304,7 @@ void WebContentsViewAndroid::HidePopupMenu() {
   if (content_view_core_)
     content_view_core_->HideSelectPopupMenu();
 }
+#endif
 
 void WebContentsViewAndroid::StartDragging(
     const DropData& drop_data,

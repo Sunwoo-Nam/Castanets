@@ -1024,7 +1024,7 @@ class CONTENT_EXPORT RenderFrameImpl
   void OnClearFocusedElement();
   void OnBlinkFeatureUsageReport(const std::set<int>& features);
   void OnMixedContentFound(const FrameMsg_MixedContentFound_Params& params);
-#if defined(OS_ANDROID)
+#if defined(OS_ANDROID) && !defined(CASTANETS)
   void OnActivateNearestFindResult(int request_id, float x, float y);
   void OnGetNearestFindResult(int request_id, float x, float y);
   void OnFindMatchRects(int current_version);

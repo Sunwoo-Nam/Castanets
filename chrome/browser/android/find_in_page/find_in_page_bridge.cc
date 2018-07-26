@@ -55,8 +55,10 @@ ScopedJavaLocalRef<jstring> FindInPageBridge::GetPreviousFindText(
 void FindInPageBridge::RequestFindMatchRects(JNIEnv* env,
                                              const JavaParamRef<jobject>& obj,
                                              jint current_version) {
+#if !defined(CASTANETS)
   FindTabHelper::FromWebContents(web_contents_)->
       RequestFindMatchRects(current_version);
+#endif
 }
 
 void FindInPageBridge::ActivateNearestFindResult(
@@ -64,8 +66,10 @@ void FindInPageBridge::ActivateNearestFindResult(
     const JavaParamRef<jobject>& obj,
     jfloat x,
     jfloat y) {
+#if !defined(CASTANETS)
   FindTabHelper::FromWebContents(web_contents_)->
       ActivateNearestFindResult(x, y);
+#endif
 }
 
 void FindInPageBridge::ActivateFindInPageResultForAccessibility(

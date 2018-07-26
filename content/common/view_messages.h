@@ -317,7 +317,7 @@ IPC_STRUCT_END()
 
 // Messages sent from the browser to the renderer.
 
-#if defined(OS_ANDROID)
+#if defined(OS_ANDROID) && !defined(CASTANETS)
 // Tells the renderer to cancel an opened date/time dialog.
 IPC_MESSAGE_ROUTED0(ViewMsg_CancelDateTimeDialog)
 
@@ -537,14 +537,13 @@ IPC_MESSAGE_ROUTED3(ViewMsg_ResolveTapDisambiguation,
 // Fetches complete rendered content of a web page as plain text.
 IPC_MESSAGE_ROUTED0(ViewMsg_GetRenderedText)
 
-#if defined(OS_ANDROID)
+#if defined(OS_ANDROID)  && !defined(CASTANETS)
 // Notifies the renderer whether hiding/showing the browser controls is enabled
 // and whether or not to animate to the proper state.
 IPC_MESSAGE_ROUTED3(ViewMsg_UpdateBrowserControlsState,
                     bool /* enable_hiding */,
                     bool /* enable_showing */,
                     bool /* animate */)
-
 #endif
 
 IPC_MESSAGE_ROUTED0(ViewMsg_SelectWordAroundCaret)
@@ -801,7 +800,15 @@ IPC_MESSAGE_ROUTED3(ViewHostMsg_SelectWordAroundCaretAck,
                     int /* start_adjust */,
                     int /* end_adjust */)
 
-#if defined(OS_ANDROID)
+#if defined(OS_ANDROID) && !defined(CASTANETS)
+
+#if defined(S_TERRACE_SUPPORT) || defined(USE_EFL)
+// Start an android intent with the given URI.
+IPC_MESSAGE_ROUTED2(ViewHostMsg_StartContentIntent,
+                    GURL /* content_url */,
+                    bool /* is_main_frame */)
+#endif
+
 // Notifies that an unhandled tap has occurred at the specified x,y position
 // and that the UI may need to be triggered.
 IPC_MESSAGE_ROUTED2(ViewHostMsg_ShowUnhandledTapUIIfNeeded,

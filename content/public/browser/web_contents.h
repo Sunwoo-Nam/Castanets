@@ -812,6 +812,7 @@ class WebContents : public PageNavigator,
       const base::android::JavaRef<jobject>& jweb_contents_android);
   virtual base::android::ScopedJavaLocalRef<jobject> GetJavaWebContents() = 0;
 
+#if !defined(CASTANETS)
   // Selects and zooms to the find result nearest to the point (x,y) defined in
   // find-in-page coordinates.
   virtual void ActivateNearestFindResult(float x, float y) = 0;
@@ -825,6 +826,7 @@ class WebContents : public PageNavigator,
   // TODO(paulmeyer): This process will change slightly once multi-process
   // find-in-page is implemented. This comment should be updated at that time.
   virtual void RequestFindMatchRects(int current_version) = 0;
+#endif
 
   // Returns an InterfaceProvider for Java-implemented interfaces that are
   // scoped to this WebContents. This provides access to interfaces implemented

@@ -798,7 +798,7 @@ bool WebContentsImpl::OnMessageReceived(RenderViewHostImpl* render_view_host,
                         OnHideValidationMessage)
     IPC_MESSAGE_HANDLER(ViewHostMsg_MoveValidationMessage,
                         OnMoveValidationMessage)
-#if defined(OS_ANDROID)
+#if defined(OS_ANDROID) && !defined(CASTANETS)
     IPC_MESSAGE_HANDLER(ViewHostMsg_OpenDateTimeDialog, OnOpenDateTimeDialog)
 #endif
     IPC_MESSAGE_UNHANDLED(handled = false)
@@ -868,7 +868,7 @@ bool WebContentsImpl::OnMessageReceived(RenderFrameHostImpl* render_frame_host,
                                 OnBrowserPluginMessage(render_frame_host,
                                                        message))
 #endif
-#if defined(OS_ANDROID)
+#if defined(OS_ANDROID) && !defined(CASTANETS)
     IPC_MESSAGE_HANDLER(FrameHostMsg_FindMatchRects_Reply,
                         OnFindMatchRectsReply)
     IPC_MESSAGE_HANDLER(FrameHostMsg_GetNearestFindResult_Reply,
@@ -4102,7 +4102,7 @@ void WebContentsImpl::OnFindReply(RenderFrameHostImpl* source,
       active_match_ordinal, final_update);
 }
 
-#if defined(OS_ANDROID)
+#if defined(OS_ANDROID) && !defined(CASTANETS)
 void WebContentsImpl::OnFindMatchRectsReply(
     RenderFrameHostImpl* source,
     int version,
@@ -5590,6 +5590,7 @@ WebContentsAndroid* WebContentsImpl::GetWebContentsAndroid() {
   return web_contents_android;
 }
 
+#if !defined(CASTANETS)
 void WebContentsImpl::ActivateNearestFindResult(float x,
                                                 float y) {
   GetOrCreateFindRequestManager()->ActivateNearestFindResult(x, y);
@@ -5598,6 +5599,7 @@ void WebContentsImpl::ActivateNearestFindResult(float x,
 void WebContentsImpl::RequestFindMatchRects(int current_version) {
   GetOrCreateFindRequestManager()->RequestFindMatchRects(current_version);
 }
+#endif
 
 bool WebContentsImpl::CreateRenderViewForInitialEmptyDocument() {
   return CreateRenderViewForRenderManager(

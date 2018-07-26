@@ -405,8 +405,10 @@ void WebContentsAndroid::UpdateBrowserControlsState(
   RenderViewHost* host = web_contents_->GetRenderViewHost();
   if (!host)
     return;
+#if !defined(CASTANETS)
   host->Send(new ViewMsg_UpdateBrowserControlsState(
       host->GetRoutingID(), enable_hiding, enable_showing, animate));
+#endif
 }
 
 void WebContentsAndroid::ScrollFocusedEditableNodeIntoView(

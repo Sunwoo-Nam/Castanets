@@ -526,8 +526,10 @@ bool RenderWidgetHostViewAndroid::OnMessageReceived(
   }
   bool handled = true;
   IPC_BEGIN_MESSAGE_MAP(RenderWidgetHostViewAndroid, message)
+#if !defined(CASTANETS)
     IPC_MESSAGE_HANDLER(ViewHostMsg_ShowUnhandledTapUIIfNeeded,
                         OnShowUnhandledTapUIIfNeeded)
+#endif
     IPC_MESSAGE_HANDLER(ViewHostMsg_SelectWordAroundCaretAck,
                         OnSelectWordAroundCaretAck)
     IPC_MESSAGE_UNHANDLED(handled = false)

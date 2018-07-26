@@ -466,8 +466,10 @@ class CONTENT_EXPORT WebContentsImpl : public WebContents,
 #if defined(OS_ANDROID)
   base::android::ScopedJavaLocalRef<jobject> GetJavaWebContents() override;
   virtual WebContentsAndroid* GetWebContentsAndroid();
+#if !defined(CASTANETS)
   void ActivateNearestFindResult(float x, float y) override;
   void RequestFindMatchRects(int current_version) override;
+#endif
   service_manager::InterfaceProvider* GetJavaInterfaces() override;
 #elif defined(OS_MACOSX)
   void SetAllowOtherViews(bool allow) override;
@@ -1105,7 +1107,7 @@ class CONTENT_EXPORT WebContentsImpl : public WebContents,
                    const gfx::Rect& selection_rect,
                    int active_match_ordinal,
                    bool final_update);
-#if defined(OS_ANDROID)
+#if defined(OS_ANDROID) && !defined(CASTANETS)
   void OnFindMatchRectsReply(RenderFrameHostImpl* source,
                              int version,
                              const std::vector<gfx::RectF>& rects,

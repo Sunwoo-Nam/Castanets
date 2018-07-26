@@ -66,7 +66,7 @@ ScopedPlatformHandle CreateTCPClientHandle(size_t port) {
   unix_addr.sin_family = AF_INET;
   unix_addr.sin_port = htons(port);
 #ifdef OS_ANDROID
-  unix_addr.sin_addr.s_addr = inet_addr("192.168.0.118");
+  unix_addr.sin_addr.s_addr = inet_addr("192.168.1.9");
 #else
   unix_addr.sin_addr.s_addr = inet_addr(server_address.c_str());
 #endif

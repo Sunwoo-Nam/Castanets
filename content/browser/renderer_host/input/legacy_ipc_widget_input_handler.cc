@@ -83,7 +83,7 @@ void LegacyIPCWidgetInputHandler::ImeFinishComposingText(bool keep_selection) {
       input_router_->routing_id(), keep_selection));
 }
 void LegacyIPCWidgetInputHandler::RequestTextInputStateUpdate() {
-#if defined(OS_ANDROID)
+#if defined(OS_ANDROID) && !defined(CASTANETS)
   SendInput(base::MakeUnique<InputMsg_RequestTextInputStateUpdate>(
       input_router_->routing_id()));
 #endif

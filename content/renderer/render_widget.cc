@@ -661,7 +661,7 @@ bool RenderWidget::OnMessageReceived(const IPC::Message& message) {
     IPC_MESSAGE_HANDLER(DragMsg_SourceEnded, OnDragSourceEnded)
     IPC_MESSAGE_HANDLER(DragMsg_SourceSystemDragEnded,
                         OnDragSourceSystemDragEnded)
-#if defined(OS_ANDROID)
+#if defined(OS_ANDROID) && !defined(CASTANETS)
     IPC_MESSAGE_HANDLER(InputMsg_RequestTextInputStateUpdate,
                         OnRequestTextInputStateUpdate)
 #endif
@@ -2287,6 +2287,7 @@ blink::WebScreenInfo RenderWidget::GetScreenInfo() {
 #if defined(OS_ANDROID)
 void RenderWidget::ShowUnhandledTapUIIfNeeded(
     const WebTappedInfo& tapped_info) {
+#if !defined(CASTANETS)
   // Unpack tapped_info. TODO(donnd): inline unpacking.
   bool page_changed = tapped_info.PageChanged();
   const WebNode& tapped_node = tapped_info.GetNode();
@@ -2298,6 +2299,7 @@ void RenderWidget::ShowUnhandledTapUIIfNeeded(
     Send(new ViewHostMsg_ShowUnhandledTapUIIfNeeded(
         routing_id_, tapped_position.x, tapped_position.y));
   }
+#endif
 }
 #endif
 

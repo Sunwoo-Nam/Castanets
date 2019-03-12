@@ -215,7 +215,11 @@ struct CONTENT_EXPORT WebPreferences {
   bool use_native_scrollbars = false;
 #endif
 #if defined(CASTANETS) // from TIZEN_VIDEO_HOLE
+#if defined(VIDEO_HOLE)
+  bool video_hole_enabled = true;
+#else
   bool video_hole_enabled = false;
+#endif
 #endif
   V8CacheOptions v8_cache_options;
   bool record_whole_document;

@@ -975,6 +975,10 @@ void RenderWidget::DidCommitCompositorFrame() {
     observer.DidCommitCompositorFrame();
   for (auto& observer : render_frame_proxies_)
     observer.DidCommitCompositorFrame();
+#if defined(VIDEO_HOLE)
+  for (auto& observer : video_hole_frames_)
+    observer.DidCommitCompositorFrame();
+#endif  // defined(VIDEO_HOLE)
 }
 
 void RenderWidget::DidCompletePageScaleAnimation() {}
@@ -2401,6 +2405,16 @@ void RenderWidget::RegisterRenderFrame(RenderFrameImpl* frame) {
 void RenderWidget::UnregisterRenderFrame(RenderFrameImpl* frame) {
   render_frames_.RemoveObserver(frame);
 }
+
+#if defined(VIDEO_HOLE)
+void RenderWidget::RegisterVideoHoleFrame(RenderFrameImpl* frame) {
+  video_hole_frames_.AddObserver(frame);
+}
+
+void RenderWidget::UnregisterVideoHoleFrame(RenderFrameImpl* frame) {
+  video_hole_frames_.RemoveObserver(frame);
+}
+#endif  // defined(VIDEO_HOLE)
 
 void RenderWidget::OnWaitNextFrameForTests(int routing_id) {
   QueueMessage(new ViewHostMsg_WaitForNextFrameForTests_ACK(routing_id),

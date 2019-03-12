@@ -328,6 +328,10 @@ class CONTENT_EXPORT RenderThreadImpl
     return midi_message_filter_.get();
   }
 
+#if defined(CASTANETS)
+  IPC::MessageFilter* renderer_demuxer() { return renderer_demuxer_.get(); }
+#endif
+
 #if defined(OS_ANDROID)
   SynchronousCompositorFilter* sync_compositor_message_filter() {
     return sync_compositor_message_filter_.get();
@@ -619,6 +623,10 @@ class CONTENT_EXPORT RenderThreadImpl
   scoped_refptr<AudioInputMessageFilter> audio_input_message_filter_;
   scoped_refptr<MidiMessageFilter> midi_message_filter_;
   scoped_refptr<DevToolsAgentFilter> devtools_agent_message_filter_;
+
+#if defined(CASTANETS)
+  scoped_refptr<IPC::MessageFilter> renderer_demuxer_;
+#endif
 
   std::unique_ptr<BrowserPluginManager> browser_plugin_manager_;
 

@@ -21,10 +21,10 @@ if (is_android) {
 }
 
 declare_args() {
-
   # Enables CASTANETS.
   enable_castanets = false
   enable_network_shared_memory = false
+  enable_video_hole = true
 
   # Enables proprietary codecs and demuxers; e.g. H264, AAC, MP3, and MP4.
   # We always build Google Chrome and Chromecast with proprietary codecs.
@@ -61,6 +61,10 @@ declare_args() {
               current_toolchain == default_toolchain
 
   use_gio = is_linux && !is_chromeos && !is_chromecast
+}
+
+if (enable_castanets) {
+  proprietary_codecs = true
 }
 #
 # =============================================

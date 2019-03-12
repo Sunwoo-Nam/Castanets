@@ -72,6 +72,9 @@ class MEDIA_EXPORT VideoFrame : public base::RefCountedThreadSafe<VideoFrame> {
 #endif
     STORAGE_MOJO_SHARED_BUFFER = 6,
     STORAGE_LAST = STORAGE_MOJO_SHARED_BUFFER,
+#if defined(VIDEO_HOLE)
+    STORAGE_HOLE = 7,
+#endif
   };
 
   // CB to be called on the mailbox backing this frame when the frame is
@@ -285,6 +288,11 @@ class MEDIA_EXPORT VideoFrame : public base::RefCountedThreadSafe<VideoFrame> {
   // context.  Calls MD5Update with the context and the contents of the frame.
   static void HashFrameForTesting(base::MD5Context* context,
                                   const scoped_refptr<VideoFrame>& frame);
+
+#if defined(VIDEO_HOLE)
+  // Allocates a hole frame.
+  static scoped_refptr<VideoFrame> CreateHoleFrame(const gfx::Size& size);
+#endif
 
   // Returns true if |frame| is accessible and mapped in the VideoFrame memory
   // space. If false, clients should refrain from accessing data(),

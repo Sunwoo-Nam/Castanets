@@ -9,6 +9,12 @@
 #include "base/time/time.h"
 #include "cc/cc_export.h"
 
+#if defined(VIDEO_HOLE)
+namespace gfx {
+class Rect;
+}
+#endif
+
 namespace media {
 class VideoFrame;
 }
@@ -82,6 +88,10 @@ class CC_EXPORT VideoFrameProvider {
   // frame missed its intended deadline.
   virtual void PutCurrentFrame() = 0;
 
+#if defined(VIDEO_HOLE)
+  // Notifies the client of video plane geometry to be use.
+  virtual void OnDrawableContentRectChanged(const gfx::Rect&) = 0;
+#endif
  protected:
   virtual ~VideoFrameProvider() {}
 };

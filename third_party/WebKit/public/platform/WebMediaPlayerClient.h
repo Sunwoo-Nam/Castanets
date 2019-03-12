@@ -143,6 +143,10 @@ class BLINK_PLATFORM_EXPORT WebMediaPlayerClient {
   // Rendering media into this color space may avoid some conversions.
   virtual gfx::ColorSpace TargetColorSpace() { return gfx::ColorSpace(); }
 
+#if defined(CASTANETS)
+  virtual WebString GetContentMIMEType() = 0;
+#endif
+
  protected:
   ~WebMediaPlayerClient() = default;
 };

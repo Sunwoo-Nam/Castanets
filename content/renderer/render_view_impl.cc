@@ -978,6 +978,10 @@ void RenderView::ApplyWebPreferences(const WebPreferences& prefs,
       prefs.scroll_top_left_interop_enabled);
 #endif  // defined(OS_ANDROID) || defined(CASTANETS)
 
+#if defined(VIDEO_HOLE)
+  settings->SetVideoHoleEnabled(prefs.video_hole_enabled);
+#endif
+
   switch (prefs.autoplay_policy) {
     case AutoplayPolicy::kNoUserGestureRequired:
       settings->SetAutoplayPolicy(

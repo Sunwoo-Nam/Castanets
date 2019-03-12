@@ -14,7 +14,9 @@
 namespace {
 
 bool ShouldLoadAndroidCSS() {
-#if defined(OS_ANDROID)
+#if defined(CASTANETS)
+  return false;
+#elif defined(OS_ANDROID)
   return true;
 #else
   return blink::RuntimeEnabledFeatures::MobileLayoutThemeEnabled();
@@ -41,6 +43,9 @@ MediaControlsResourceLoader::~MediaControlsResourceLoader() {}
 #pragma GCC diagnostic warning "-Wunknown-pragmas"
 #endif
 String MediaControlsResourceLoader::GetMediaControlsCSS() const {
+#if defined(CASTANETS)
+  return String();
+#endif
   return ResourceBundleHelper::UncompressResourceAsString(
       RuntimeEnabledFeatures::ModernMediaControlsEnabled()
           ? IDR_UASTYLE_MODERN_MEDIA_CONTROLS_CSS

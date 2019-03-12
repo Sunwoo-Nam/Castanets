@@ -71,6 +71,10 @@ class MEDIA_BLINK_EXPORT VideoFrameCompositor : public VideoRendererSink,
   // |media_context_provider_callback| requires being called on the media
   // thread.
   VideoFrameCompositor(
+#if defined(VIDEO_HOLE)
+      const base::Callback<void(gfx::Rect, bool)>&
+          drawable_content_rect_changed_cb,
+#endif
       const scoped_refptr<base::SingleThreadTaskRunner>& task_runner,
       blink::WebContextProviderCallback media_context_provider_callback);
 
@@ -123,6 +127,10 @@ class MEDIA_BLINK_EXPORT VideoFrameCompositor : public VideoRendererSink,
   // Must be called on the compositor thread.
   void SetOnNewProcessedFrameCallback(const OnNewProcessedFrameCB& cb);
 
+#if defined(VIDEO_HOLE)
+  void OnDrawableContentRectChanged(const gfx::Rect&) override;
+#endif
+
   void set_tick_clock_for_testing(std::unique_ptr<base::TickClock> tick_clock) {
     tick_clock_ = std::move(tick_clock);
   }
@@ -167,6 +175,10 @@ class MEDIA_BLINK_EXPORT VideoFrameCompositor : public VideoRendererSink,
   bool CallRender(base::TimeTicks deadline_min,
                   base::TimeTicks deadline_max,
                   bool background_rendering);
+
+#if defined(VIDEO_HOLE)
+  const base::Callback<void(gfx::Rect, bool)> drawable_content_rect_changed_cb_;
+#endif
 
   // This will run tasks on the compositor thread. If
   // kEnableSurfaceLayerForVideo is enabled, it will instead run tasks on the

@@ -444,6 +444,11 @@ class WebView : protected WebWidget {
   // context's ability to deal with that failure gracefully can be tested.
   virtual void ForceNextDrawingBufferCreationToFail() = 0;
 
+#if defined(VIDEO_HOLE)
+  virtual void SetVideoHoleForRender(bool enable) = 0;
+  virtual bool IsVideoHoleForRender() const = 0;
+#endif
+
   // TODO(lfg): Remove this once the refactor of WebView/WebWidget is
   // completed.
   WebWidget* GetWidget() { return this; }

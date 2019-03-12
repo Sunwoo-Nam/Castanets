@@ -79,6 +79,10 @@ class CONTENT_EXPORT WebMediaPlayerMSCompositor
   scoped_refptr<media::VideoFrame> GetCurrentFrame() override;
   void PutCurrentFrame() override;
 
+#if defined(VIDEO_HOLE)
+  void OnDrawableContentRectChanged(const gfx::Rect&) override {}
+#endif
+
   // Return the current frame being rendered.
   // Difference between GetCurrentFrame(): GetCurrentFrame() is designed for
   // chrome compositor to pull frame from WebMediaPlayerMSCompositor, and thus

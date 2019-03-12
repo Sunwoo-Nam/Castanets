@@ -62,6 +62,10 @@ class CC_EXPORT VideoLayerImpl : public LayerImpl {
 
   media::VideoRotation video_rotation_;
 
+#if defined(VIDEO_HOLE)
+  gfx::Rect previous_content_rect_;
+#endif
+
   std::unique_ptr<VideoResourceUpdater> updater_;
   VideoFrameExternalResources::ResourceType frame_resource_type_;
   float frame_resource_offset_;

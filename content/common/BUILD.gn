@@ -234,7 +234,6 @@ source_set("common") {
     "media/media_devices_param_traits.cc",
     "media/media_devices_param_traits.h",
     "media/media_player_delegate_messages.h",
-    "media/media_player_messages_android.h",
     "media/media_stream_controls.cc",
     "media/media_stream_controls.h",
     "media/media_stream_param_traits.cc",
@@ -362,6 +361,16 @@ source_set("common") {
     "view_messages.h",
     "zygote_commands_linux.h",
   ]
+
+  if (enable_castanets) {
+    sources += [
+      "media/media_param_traits_castanets.cc",
+      "media/media_param_traits_castanets.h",
+      "media/media_player_messages_castanets.h",
+    ]
+  } else {
+    sources += [ "media_player_messages_android.h" ]
+  }
 
   configs += [
     "//content:content_implementation",

@@ -176,6 +176,9 @@ class MEDIA_EXPORT ChunkDemuxerStream : public DemuxerStream {
   DISALLOW_IMPLICIT_CONSTRUCTORS(ChunkDemuxerStream);
 };
 
+#if defined(CASTANETS)
+using SeekCB = base::Callback<void(base::TimeDelta, PipelineStatus)>;
+#endif
 // Demuxer implementation that allows chunks of media data to be passed
 // from JavaScript to the media stack.
 class MEDIA_EXPORT ChunkDemuxer : public Demuxer {
@@ -208,6 +211,9 @@ class MEDIA_EXPORT ChunkDemuxer : public Demuxer {
                   bool enable_text_tracks) override;
   void Stop() override;
   void Seek(base::TimeDelta time, const PipelineStatusCB& cb) override;
+#if defined(CASTANETS)
+  void Seek(base::TimeDelta time, const SeekCB& seek_cb);
+#endif
   base::Time GetTimelineOffset() const override;
   std::vector<DemuxerStream*> GetAllStreams() override;
   void SetStreamStatusChangeCB(const StreamStatusChangeCB& cb) override;

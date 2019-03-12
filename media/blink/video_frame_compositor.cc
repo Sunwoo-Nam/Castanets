@@ -22,9 +22,17 @@ namespace media {
 const int kBackgroundRenderingTimeoutMs = 250;
 
 VideoFrameCompositor::VideoFrameCompositor(
+#if defined(VIDEO_HOLE)
+    const base::Callback<void(gfx::Rect, bool)>&
+        drawable_content_rect_changed_cb,
+#endif
     const scoped_refptr<base::SingleThreadTaskRunner>& task_runner,
     blink::WebContextProviderCallback media_context_provider_callback)
-    : task_runner_(task_runner),
+    :
+#if defined(VIDEO_HOLE)
+      drawable_content_rect_changed_cb_(drawable_content_rect_changed_cb),
+#endif
+      task_runner_(task_runner),
       tick_clock_(new base::DefaultTickClock()),
       background_rendering_enabled_(true),
       background_rendering_timer_(
@@ -307,5 +315,11 @@ bool VideoFrameCompositor::CallRender(base::TimeTicks deadline_min,
     background_rendering_timer_.Reset();
   return new_frame || had_new_background_frame;
 }
+
+#if defined(VIDEO_HOLE)
+void VideoFrameCompositor::OnDrawableContentRectChanged(const gfx::Rect& rect) {
+  drawable_content_rect_changed_cb_.Run(rect, true);
+}
+#endif
 
 }  // namespace media

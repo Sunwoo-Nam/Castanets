@@ -65,9 +65,11 @@ class MediaInitializer {
  private:
   ~MediaInitializer() = delete;
 
-#if defined(OS_ANDROID)
+#if defined(CASTANETS)
+  bool has_platform_decoder_support_ = true;
+#elif defined(OS_ANDROID)
   bool has_platform_decoder_support_ = false;
-#endif  // defined(OS_ANDROID)
+#endif
 
   DISALLOW_COPY_AND_ASSIGN(MediaInitializer);
 };

@@ -88,7 +88,7 @@ component("blink") {
     "//url",
   ]
 
-  if (media_use_ffmpeg || !is_android) {
+  if (!enable_castanets && (media_use_ffmpeg || !is_android)) {
     sources += [
       "webmediaplayer_impl.cc",
       "webmediaplayer_impl.h",

@@ -21,6 +21,10 @@
 #include "media/base/video_frame.h"
 #include "ui/gfx/color_space.h"
 
+#if defined(VIDEO_HOLE)
+#include "components/viz/common/quads/solid_color_draw_quad.h"
+#endif
+
 namespace cc {
 
 // static
@@ -324,6 +328,27 @@ void VideoLayerImpl::AppendQuads(viz::RenderPass* render_pass,
       ValidateQuadResources(stream_video_quad);
       break;
     }
+#if defined(VIDEO_HOLE)
+    case VideoFrameExternalResources::HOLE: {
+      DCHECK_EQ(frame_resources_.size(), 0u);
+      auto* solid_color_draw_quad =
+          render_pass->CreateAndAppendDrawQuad<viz::SolidColorDrawQuad>();
+
+      // Create a solid color quad with transparent black and force no
+      // blending / no anti-aliasing.
+      solid_color_draw_quad->SetAll(shared_quad_state, quad_rect,
+                                    visible_quad_rect, false,
+                                    SK_ColorTRANSPARENT, true);
+
+      const gfx::Rect content_rect =
+          MathUtil::MapEnclosingClippedRect(DrawTransform(), quad_rect);
+      if (previous_content_rect_ != content_rect) {
+        previous_content_rect_ = content_rect;
+        provider_client_impl_->OnDrawableContentRectChanged(content_rect);
+      }
+      break;
+    }
+#endif  // defined(VIDEO_HOLE)
     case VideoFrameExternalResources::NONE:
       NOTIMPLEMENTED();
       break;

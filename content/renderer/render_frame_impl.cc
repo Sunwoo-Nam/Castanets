@@ -1195,6 +1195,9 @@ RenderFrameImpl::RenderFrameImpl(const CreateParams& params)
       selection_range_(gfx::Range::InvalidRange()),
       handling_select_range_(false),
       web_user_media_client_(NULL),
+#if defined(VIDEO_HOLE)
+      contains_media_player_(false),
+#endif
       devtools_agent_(nullptr),
       presentation_dispatcher_(NULL),
       push_messaging_client_(NULL),
@@ -1279,6 +1282,11 @@ RenderFrameImpl::~RenderFrameImpl() {
     observer.OnDestruct();
 
   base::trace_event::TraceLog::GetInstance()->RemoveProcessLabel(routing_id_);
+
+#if defined(VIDEO_HOLE)
+  if (contains_media_player_)
+    render_view_->UnregisterVideoHoleFrame(this);
+#endif
 
   // Unregister from InputHandlerManager. render_thread may be NULL in tests.
   RenderThreadImpl* render_thread = RenderThreadImpl::current();
@@ -1706,7 +1714,7 @@ bool RenderFrameImpl::OnMessageReceived(const IPC::Message& msg) {
     IPC_MESSAGE_HANDLER(FrameMsg_MixedContentFound, OnMixedContentFound)
     IPC_MESSAGE_HANDLER(FrameMsg_SetOverlayRoutingToken,
                         OnSetOverlayRoutingToken)
-#if defined(OS_ANDROID)
+#if defined(OS_ANDROID) && !defined(CASTANETS)
     IPC_MESSAGE_HANDLER(FrameMsg_ActivateNearestFindResult,
                         OnActivateNearestFindResult)
     IPC_MESSAGE_HANDLER(FrameMsg_GetNearestFindResult,
@@ -2995,8 +3003,22 @@ blink::WebMediaPlayer* RenderFrameImpl::CreateMediaPlayer(
     WebContentDecryptionModule* initial_cdm,
     const blink::WebString& sink_id,
     blink::WebLayerTreeView* layer_tree_view) {
-  return media_factory_.CreateMediaPlayer(
-      source, client, encrypted_client, initial_cdm, sink_id, layer_tree_view);
+#if defined(VIDEO_HOLE)
+  bool is_video_hole = false;
+  if (frame_ && frame_->View())
+    is_video_hole = frame_->View()->IsVideoHoleForRender();
+
+  if (!contains_media_player_) {
+    render_view_->RegisterVideoHoleFrame(this);
+    contains_media_player_ = true;
+  }
+#endif
+  return media_factory_.CreateMediaPlayer(source, client, encrypted_client,
+                                          initial_cdm, sink_id,
+#if defined(CASTANETS)
+                                          is_video_hole,
+#endif
+                                          layer_tree_view);
 }
 
 std::unique_ptr<blink::WebApplicationCacheHost>
@@ -5941,7 +5963,7 @@ void RenderFrameImpl::OnMixedContentFound(
                             params.had_redirect, source_location);
 }
 
-#if defined(OS_ANDROID)
+#if defined(OS_ANDROID) && !defined(CASTANETS)
 void RenderFrameImpl::OnActivateNearestFindResult(int request_id,
                                                   float x,
                                                   float y) {

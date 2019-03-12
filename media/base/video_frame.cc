@@ -69,6 +69,10 @@ static std::string StorageTypeToString(
 #endif
     case VideoFrame::STORAGE_MOJO_SHARED_BUFFER:
       return "MOJO_SHARED_BUFFER";
+#if defined(VIDEO_HOLE)
+    case VideoFrame::STORAGE_HOLE:
+      return "HOLE";
+#endif
   }
 
   NOTREACHED() << "Invalid StorageType provided: " << storage_type;
@@ -632,6 +636,23 @@ void VideoFrame::HashFrameForTesting(base::MD5Context* context,
     }
   }
 }
+
+#if defined(VIDEO_HOLE)
+// static
+scoped_refptr<VideoFrame> VideoFrame::CreateHoleFrame(const gfx::Size& size) {
+  const VideoPixelFormat format = PIXEL_FORMAT_UNKNOWN;
+  const StorageType storage = STORAGE_HOLE;
+  const gfx::Rect visible_rect = gfx::Rect(size);
+  if (!IsValidConfig(format, storage, size, visible_rect, size)) {
+    LOG(ERROR) << __func__ << " Invalid config."
+               << ConfigToString(format, storage, size, visible_rect, size);
+    return nullptr;
+  }
+  scoped_refptr<VideoFrame> frame(new VideoFrame(
+      format, storage, size, gfx::Rect(size), size, base::TimeDelta()));
+  return frame;
+}
+#endif
 
 bool VideoFrame::IsMappable() const {
   return IsStorageTypeMappable(storage_type_);

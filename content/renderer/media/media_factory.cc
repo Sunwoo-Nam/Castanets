@@ -28,7 +28,6 @@
 #include "media/base/surface_manager.h"
 #include "media/blink/resource_fetch_context.h"
 #include "media/blink/webencryptedmediaclient_impl.h"
-#include "media/blink/webmediaplayer_impl.h"
 #include "media/filters/context_3d.h"
 #include "media/media_features.h"
 #include "media/renderers/default_renderer_factory.h"
@@ -43,9 +42,16 @@
 #include "third_party/WebKit/public/web/WebLocalFrame.h"
 #include "url/origin.h"
 
+#if defined(CASTANETS)
+#include "content/renderer/media/castanets/renderer_media_player_manager_castanets.h"
+#include "content/renderer/media/castanets/webmediaplayer_castanets.h"
+#elif defined(OS_ANDROID)
+#include "content/renderer/media/android/renderer_media_player_manager.h"
+#include "media/blink/webmediaplayer_impl.h"
+#endif
+
 #if defined(OS_ANDROID)
 #include "content/renderer/media/android/media_player_renderer_client_factory.h"
-#include "content/renderer/media/android/renderer_media_player_manager.h"
 #include "content/renderer/media/android/renderer_surface_view_manager.h"
 #include "content/renderer/media/android/stream_texture_wrapper_impl.h"
 #include "media/base/android/media_codec_util.h"
@@ -197,6 +203,9 @@ blink::WebMediaPlayer* MediaFactory::CreateMediaPlayer(
     blink::WebMediaPlayerEncryptedMediaClient* encrypted_client,
     blink::WebContentDecryptionModule* initial_cdm,
     const blink::WebString& sink_id,
+#if defined(CASTANETS)
+    bool is_video_hole,
+#endif
     blink::WebLayerTreeView* layer_tree_view) {
   blink::WebLocalFrame* web_frame = render_frame_->GetWebFrame();
   blink::WebSecurityOrigin security_origin =
@@ -306,6 +315,13 @@ blink::WebMediaPlayer* MediaFactory::CreateMediaPlayer(
               RenderThreadImpl::current()->GetCompositorMainThreadTaskRunner()),
           RenderThreadImpl::current()->SharedMainThreadContextProvider()));
 
+#if defined(CASTANETS)
+  blink::WebMediaPlayer* media_player = new content::WebMediaPlayerCastanets(
+      web_frame, GetMediaPlayerManager(), client, encrypted_client,
+      GetWebMediaPlayerDelegate()->AsWeakPtr(), std::move(params),
+      is_video_hole);
+  return media_player;
+#else
   media::WebMediaPlayerImpl* media_player = new media::WebMediaPlayerImpl(
       web_frame, client, encrypted_client, GetWebMediaPlayerDelegate(),
       std::move(factory_selector), url_index_.get(), std::move(params));
@@ -317,6 +333,7 @@ blink::WebMediaPlayer* MediaFactory::CreateMediaPlayer(
 #endif  // defined(OS_ANDROID)
 
   return media_player;
+#endif  // defined(CASTAETS)
 }
 
 blink::WebEncryptedMediaClient* MediaFactory::EncryptedMediaClient() {
@@ -491,13 +508,13 @@ media::DecoderFactory* MediaFactory::GetDecoderFactory() {
   return decoder_factory_.get();
 }
 
-#if defined(OS_ANDROID)
+#if defined(OS_ANDROID) || defined(CASTANETS)
 RendererMediaPlayerManager* MediaFactory::GetMediaPlayerManager() {
   if (!media_player_manager_)
     media_player_manager_ = new RendererMediaPlayerManager(render_frame_);
   return media_player_manager_;
 }
-#endif  // defined(OS_ANDROID)
+#endif  // defined(OS_ANDROID) || defined(CASTANETS)
 
 #if BUILDFLAG(ENABLE_MEDIA_REMOTING)
 media::mojom::RemoterFactory* MediaFactory::GetRemoterFactory() {

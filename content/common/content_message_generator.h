@@ -191,6 +191,15 @@
 #endif
 #endif  // defined(OS_ANDROID)
 
+#if defined(CASTANETS)
+#undef CONTENT_COMMON_MEDIA_MEDIA_PLAYER_MESSAGES_CASTANETS_H_
+#include "content/common/media/media_player_messages_castanets.h"
+#ifndef CONTENT_COMMON_MEDIA_MEDIA_PLAYER_MESSAGES_CASTANETS_H_
+#error \
+    "Failed to include content/common/media/media_player_messages_castanets.h"
+#endif
+#endif  // defined(CASTANETS)
+
 #if defined(OS_WIN)
 #undef CONTENT_COMMON_DWRITE_FONT_PROXY_MESSAGES_H_
 #include "content/common/dwrite_font_proxy_messages.h"

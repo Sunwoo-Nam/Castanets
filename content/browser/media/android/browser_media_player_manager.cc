@@ -126,6 +126,10 @@ BrowserMediaPlayerManager::CreateMediaPlayer(
       }
       return std::move(media_player_bridge);
     }
+#if defined(CASTANETS)
+    default:
+      NOTREACHED();
+#endif
   }
 
   NOTREACHED();

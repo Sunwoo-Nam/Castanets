@@ -985,5 +985,10 @@
       name: "navigatorPlatformOverride",
       type: "String",
     },
+
+    {
+      name: "videoHoleEnabled",
+      initial: false,
+    },
   ],
 }

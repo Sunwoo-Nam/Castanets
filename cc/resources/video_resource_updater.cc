@@ -290,6 +290,13 @@ void VideoResourceUpdater::DeleteResource(ResourceList::iterator resource_it) {
 VideoFrameExternalResources
 VideoResourceUpdater::CreateExternalResourcesFromVideoFrame(
     scoped_refptr<media::VideoFrame> video_frame) {
+#if defined(VIDEO_HOLE)
+  if (video_frame->storage_type() == media::VideoFrame::STORAGE_HOLE) {
+    VideoFrameExternalResources external_resources;
+    external_resources.type = VideoFrameExternalResources::HOLE;
+    return external_resources;
+  }
+#endif
   if (video_frame->format() == media::PIXEL_FORMAT_UNKNOWN)
     return VideoFrameExternalResources();
   DCHECK(video_frame->HasTextures() || video_frame->IsMappable());

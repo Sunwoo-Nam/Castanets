@@ -240,6 +240,9 @@ class MEDIA_BLINK_EXPORT WebMediaPlayerImpl
   void SetDeviceScaleFactor(float scale_factor);
   void SetUseFallbackPath(bool use_fallback_path);
 #endif
+#if defined(CASTANETS)
+  void OnDurationChange(base::TimeDelta) override {}
+#endif
 
   // MediaObserverClient implementation.
   void SwitchToRemoteRenderer(
@@ -347,8 +350,13 @@ class MEDIA_BLINK_EXPORT WebMediaPlayerImpl
 
   // Helpers that set the network/ready state and notifies the client if
   // they've changed.
+#if defined(CASTANETS)
+  void SetNetworkState(blink::WebMediaPlayer::NetworkState state) override;
+  void SetReadyState(blink::WebMediaPlayer::ReadyState state) override;
+#else
   void SetNetworkState(blink::WebMediaPlayer::NetworkState state);
   void SetReadyState(blink::WebMediaPlayer::ReadyState state);
+#endif
 
   // Returns the current video frame from |compositor_|. Blocks until the
   // compositor can return the frame.

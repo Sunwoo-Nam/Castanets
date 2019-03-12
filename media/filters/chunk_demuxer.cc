@@ -379,8 +379,7 @@ void ChunkDemuxerStream::SetLiveness(Liveness liveness) {
 void ChunkDemuxerStream::ChangeState_Locked(State state) {
   lock_.AssertAcquired();
   DVLOG(1) << "ChunkDemuxerStream::ChangeState_Locked() : "
-           << "type " << type_
-           << " - " << state_ << " -> " << state;
+           << "type " << type_ << " - " << state_ << " -> " << state;
   state_ = state;
 }
 
@@ -506,14 +505,32 @@ void ChunkDemuxer::Stop() {
   Shutdown();
 }
 
+#if defined(CASTANETS)
+static void PipelineStatusCBWrapper(PipelineStatusCB cb,
+                                    TimeDelta,
+                                    PipelineStatus status) {
+  cb.Run(status);
+}
+#endif
+
 void ChunkDemuxer::Seek(TimeDelta time, const PipelineStatusCB& cb) {
+#if defined(CASTANETS)
+  Seek(time, base::Bind(PipelineStatusCBWrapper, cb));
+}
+
+void ChunkDemuxer::Seek(TimeDelta time, const SeekCB& cb) {
+#endif
   DVLOG(1) << "Seek(" << time.InSecondsF() << ")";
   DCHECK(time >= TimeDelta());
 
   base::AutoLock auto_lock(lock_);
   DCHECK(seek_cb_.is_null());
 
+#if defined(CASTANETS)
+  seek_cb_ = BindToCurrentLoop(base::Bind(cb, time));
+#else
   seek_cb_ = BindToCurrentLoop(cb);
+#endif
   if (state_ != INITIALIZED && state_ != ENDED) {
     base::ResetAndReturn(&seek_cb_).Run(PIPELINE_ERROR_INVALID_STATE);
     return;
@@ -939,8 +956,8 @@ void ChunkDemuxer::ResetParserState(const std::string& id,
 
 void ChunkDemuxer::Remove(const std::string& id, TimeDelta start,
                           TimeDelta end) {
-  DVLOG(1) << "Remove(" << id << ", " << start.InSecondsF()
-           << ", " << end.InSecondsF() << ")";
+  DVLOG(1) << "Remove(" << id << ", " << start.InSecondsF() << ", "
+           << end.InSecondsF() << ")";
   base::AutoLock auto_lock(lock_);
 
   DCHECK(!id.empty());
@@ -1131,8 +1148,8 @@ void ChunkDemuxer::SetMemoryLimitsForTest(DemuxerStream::Type type,
 
 void ChunkDemuxer::ChangeState_Locked(State new_state) {
   lock_.AssertAcquired();
-  DVLOG(1) << "ChunkDemuxer::ChangeState_Locked() : "
-           << state_ << " -> " << new_state;
+  DVLOG(1) << "ChunkDemuxer::ChangeState_Locked() : " << state_ << " -> "
+           << new_state;
   state_ = new_state;
 }
 

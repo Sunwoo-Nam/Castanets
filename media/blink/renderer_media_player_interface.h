@@ -14,6 +14,9 @@
 #include <string>
 #include "base/time/time.h"
 #include "media/blink/webmediaplayer_delegate.h"
+#if defined(CASTANETS)
+#include "third_party/WebKit/public/platform/WebMediaPlayer.h"
+#endif
 #include "ui/gfx/geometry/rect_f.h"
 #include "url/gurl.h"
 
@@ -23,9 +26,25 @@ enum class WebRemotePlaybackAvailability;
 
 // Dictates which type of media playback is being initialized.
 enum MediaPlayerHostMsg_Initialize_Type {
+#if defined(CASTANETS)
+  MEDIA_PLAYER_TYPE_NONE,
+  MEDIA_PLAYER_TYPE_URL,
+  MEDIA_PLAYER_TYPE_MEDIA_SOURCE,
+  MEDIA_PLAYER_TYPE_MEDIA_STREAM,
+#if defined(VIDEO_HOLE)
+  MEDIA_PLAYER_TYPE_URL_WITH_VIDEO_HOLE,
+  MEDIA_PLAYER_TYPE_MEDIA_SOURCE_WITH_VIDEO_HOLE,
+  MEDIA_PLAYER_TYPE_MEDIA_STREAM_WITH_VIDEO_HOLE,
+  MEDIA_PLAYER_TYPE_WEBRTC_MEDIA_STREAM_WITH_VIDEO_HOLE,
+#endif  // defined(VIDEO_HOLE)
+  MEDIA_PLAYER_TYPE_WEBRTC_PLACEHOLDER,
+  MEDIA_PLAYER_TYPE_REMOTE_ONLY,
+  MEDIA_PLAYER_TYPE_LAST = MEDIA_PLAYER_TYPE_REMOTE_ONLY
+#else
   MEDIA_PLAYER_TYPE_URL,
   MEDIA_PLAYER_TYPE_REMOTE_ONLY,
   MEDIA_PLAYER_TYPE_LAST = MEDIA_PLAYER_TYPE_REMOTE_ONLY
+#endif  // defined(CASTANETS)
 };
 
 namespace media {
@@ -69,6 +88,26 @@ class RendererMediaPlayerInterface {
 
 class RendererMediaPlayerManagerInterface {
  public:
+#if defined(CASTANETS)
+  // Initializes a MediaPlayerCastanets object in browser process.
+  virtual void Initialize(int player_id,
+                          MediaPlayerHostMsg_Initialize_Type type,
+                          const GURL& url,
+                          const std::string& mime_type,
+                          int demuxer_client_id) = 0;
+
+  // Sets the playback rate.
+  virtual void SetRate(int player_id, double rate) = 0;
+
+  // Registers a RendererMediaPlayerInterface object.
+  virtual int RegisterMediaPlayer(blink::WebMediaPlayer* player) = 0;
+
+  // The player is now displayed in fullscreen.
+  virtual void EnteredFullscreen(int player_id) = 0;
+
+  // The player is back to a normal display mode.
+  virtual void ExitedFullscreen(int player_id) = 0;
+#else
   // Initializes a MediaPlayerAndroid object in browser process.
   virtual void Initialize(MediaPlayerHostMsg_Initialize_Type type,
                           int player_id,
@@ -77,6 +116,22 @@ class RendererMediaPlayerManagerInterface {
                           const GURL& frame_url,
                           bool allow_credentials,
                           int delegate_id) = 0;
+
+  // Sets the poster image.
+  virtual void SetPoster(int player_id, const GURL& poster) = 0;
+
+  // Requests remote playback if possible
+  virtual void RequestRemotePlayback(int player_id) = 0;
+
+  // Requests control of remote playback
+  virtual void RequestRemotePlaybackControl(int player_id) = 0;
+
+  // Requests stopping remote playback
+  virtual void RequestRemotePlaybackStop(int player_id) = 0;
+
+  // Registers a RendererMediaPlayerInterface object.
+  virtual int RegisterMediaPlayer(RendererMediaPlayerInterface* player) = 0;
+#endif
 
   // Starts the player.
   virtual void Start(int player_id) = 0;
@@ -94,27 +149,18 @@ class RendererMediaPlayerManagerInterface {
   // Sets the player volume.
   virtual void SetVolume(int player_id, double volume) = 0;
 
-  // Sets the poster image.
-  virtual void SetPoster(int player_id, const GURL& poster) = 0;
-
   // Releases resources for the player after being suspended.
   virtual void SuspendAndReleaseResources(int player_id) = 0;
 
   // Destroys the player in the browser process
   virtual void DestroyPlayer(int player_id) = 0;
 
-  // Requests remote playback if possible
-  virtual void RequestRemotePlayback(int player_id) = 0;
-
-  // Requests control of remote playback
-  virtual void RequestRemotePlaybackControl(int player_id) = 0;
-
-  // Requests stopping remote playback
-  virtual void RequestRemotePlaybackStop(int player_id) = 0;
-
-  // Registers and unregisters a RendererMediaPlayerInterface object.
-  virtual int RegisterMediaPlayer(RendererMediaPlayerInterface* player) = 0;
+  // Unregisters a RendererMediaPlayerInterface object.
   virtual void UnregisterMediaPlayer(int player_id) = 0;
+
+#if defined(VIDEO_HOLE)
+  virtual void SetMediaGeometry(int player_id, const gfx::RectF& rect) = 0;
+#endif
 };
 
 }  // namespace media

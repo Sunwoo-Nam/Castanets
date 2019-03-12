@@ -44,7 +44,7 @@ class MediaObserver;
 class RendererWebMediaPlayerDelegate;
 class SurfaceManager;
 class WebEncryptedMediaClientImpl;
-#if defined(OS_ANDROID)
+#if defined(OS_ANDROID) || defined(CASTANETS)
 class RendererMediaPlayerManager;
 #endif
 namespace remoting {
@@ -65,7 +65,7 @@ class RenderFrameImpl;
 class MediaInterfaceFactory;
 class MediaStreamRendererFactory;
 
-#if defined(OS_ANDROID)
+#if defined(OS_ANDROID) || defined(CASTANETS)
 class RendererMediaPlayerManager;
 #endif
 
@@ -100,6 +100,9 @@ class MediaFactory {
       blink::WebMediaPlayerEncryptedMediaClient* encrypted_client,
       blink::WebContentDecryptionModule* initial_cdm,
       const blink::WebString& sink_id,
+#if defined(CASTANETS)
+      bool is_video_hole,
+#endif
       blink::WebLayerTreeView* layer_tree_view);
 
   // Provides an EncryptedMediaClient to connect blink's EME layer to media's
@@ -131,7 +134,7 @@ class MediaFactory {
 
   media::DecoderFactory* GetDecoderFactory();
 
-#if defined(OS_ANDROID)
+#if defined(OS_ANDROID) || defined(CASTANETS)
   RendererMediaPlayerManager* GetMediaPlayerManager();
 #endif
 
@@ -162,7 +165,7 @@ class MediaFactory {
   // once assigned.
   service_manager::InterfaceProvider* remote_interfaces_ = nullptr;
 
-#if defined(OS_ANDROID)
+#if defined(OS_ANDROID) || defined(CASTANETS)
   // Manages media players and sessions in this render frame for communicating
   // with the real media player and sessions in the browser process.
   // Lifetime is tied to the RenderFrame via the RenderFrameObserver interface.

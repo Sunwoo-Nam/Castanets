@@ -1353,6 +1353,12 @@ class CONTENT_EXPORT RenderFrameImpl
   // The media permission dispatcher attached to this frame.
   std::unique_ptr<MediaPermissionDispatcher> media_permission_dispatcher_;
 
+#if defined(VIDEO_HOLE)
+  // Whether or not this RenderFrameImpl contains a media player. Used to
+  // register as an observer for video-hole-specific events.
+  bool contains_media_player_;
+#endif
+
   // The devtools agent for this frame; only created for main frame and
   // local roots.
   DevToolsAgent* devtools_agent_;

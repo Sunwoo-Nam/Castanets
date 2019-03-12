@@ -190,6 +190,15 @@ class CONTENT_EXPORT WebMediaPlayerMS
   void TrackAdded(const blink::WebMediaStreamTrack& track) override;
   void TrackRemoved(const blink::WebMediaStreamTrack& track) override;
 
+#if defined(CASTANETS)
+  void OnDurationChange(base::TimeDelta) override {}
+
+  // Helpers that set the network/ready state and notifies the client if
+  // they've changed.
+  void SetNetworkState(blink::WebMediaPlayer::NetworkState state) override;
+  void SetReadyState(blink::WebMediaPlayer::ReadyState state) override;
+#endif
+
  private:
   friend class WebMediaPlayerMSTest;
 
@@ -204,10 +213,12 @@ class CONTENT_EXPORT WebMediaPlayerMS
   // The callback for source to report error.
   void OnSourceError();
 
+#if !defined(CASTANETS)
   // Helpers that set the network/ready state and notifies the client if
   // they've changed.
   void SetNetworkState(blink::WebMediaPlayer::NetworkState state);
   void SetReadyState(blink::WebMediaPlayer::ReadyState state);
+#endif
 
   // Getter method to |client_|.
   blink::WebMediaPlayerClient* get_client() { return client_; }

@@ -60,6 +60,9 @@ config("feature_flags") {
   defines = [ "V8_DEPRECATION_WARNINGS" ]
   if (enable_castanets) {
     defines += [ "CASTANETS" ]
+    if (enable_video_hole) {
+      defines += [ "VIDEO_HOLE" ]
+    }
   }
   if (enable_network_shared_memory) {
     defines += [ "NETWORK_SHARED_MEMORY" ]

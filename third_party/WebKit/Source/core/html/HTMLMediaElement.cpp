@@ -1127,6 +1127,10 @@ void HTMLMediaElement::LoadResource(const WebMediaPlayerSource& source,
   // loading from the app cache is an internal detail not exposed through the
   // media element API.
   current_src_ = url;
+#if defined(CASTANETS)
+  ContentType cont_type(content_type);
+  content_mime_type_ = cont_type.GetType().DeprecatedLower();
+#endif
 
   if (audio_source_node_)
     audio_source_node_->OnCurrentSrcChanged(current_src_);
@@ -1192,6 +1196,31 @@ void HTMLMediaElement::LoadResource(const WebMediaPlayerSource& source,
   if (GetLayoutObject())
     GetLayoutObject()->UpdateFromElement();
 }
+
+#if defined(CASTANETS)
+WebString HTMLMediaElement::GetContentMIMEType() {
+  // If the MIME type is missing or is not meaningful, try to figure it out from
+  // the URL.
+  if (content_mime_type_.IsEmpty() ||
+      content_mime_type_ == "application/octet-stream" ||
+      content_mime_type_ == "text/plain") {
+    if (current_src_.ProtocolIsData())
+      content_mime_type_ = MimeTypeFromDataURL(current_src_.GetString());
+    else {
+      String last_path_component = current_src_.LastPathComponent();
+      size_t pos = last_path_component.ReverseFind('.');
+      if (pos != kNotFound) {
+        String extension = last_path_component.Substring(pos + 1);
+        String media_type =
+            MIMETypeRegistry::GetMIMETypeForExtension(extension);
+        if (!media_type.IsEmpty())
+          content_mime_type_ = media_type;
+      }
+    }
+  }
+  return WebString(content_mime_type_);
+}
+#endif
 
 void HTMLMediaElement::StartPlayerLoad() {
   DCHECK(!web_media_player_);

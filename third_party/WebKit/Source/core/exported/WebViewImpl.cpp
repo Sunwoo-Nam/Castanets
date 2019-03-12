@@ -3960,4 +3960,21 @@ LocalFrame* WebViewImpl::FocusedLocalFrameAvailableForIme() const {
   return ime_accept_events_ ? FocusedLocalFrameInWidget() : nullptr;
 }
 
+#if defined(VIDEO_HOLE)
+void WebViewImpl::SetVideoHoleForRender(bool enable) {
+  if (!GetPage())
+    return;
+
+  GetPage()->GetSettings().SetVideoHoleEnabled(enable);
+}
+
+bool WebViewImpl::IsVideoHoleForRender() const {
+  if (!GetPage())
+    return false;
+
+  // return true;
+  return GetPage()->GetSettings().GetVideoHoleEnabled();
+}
+#endif
+
 }  // namespace blink

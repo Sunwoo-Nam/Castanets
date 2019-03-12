@@ -421,6 +421,9 @@ class CORE_EXPORT HTMLMediaElement
     return remote_playback_client_;
   }
   gfx::ColorSpace TargetColorSpace() override;
+#if defined(CASTANETS)
+  WebString GetContentMIMEType() override;
+#endif
 
   void LoadTimerFired(TimerBase*);
   void ProgressEventTimerFired(TimerBase*);
@@ -555,6 +558,9 @@ class CORE_EXPORT HTMLMediaElement
   ReadyState ready_state_;
   ReadyState ready_state_maximum_;
   KURL current_src_;
+#if defined(CASTANETS)
+  String content_mime_type_;
+#endif
   Member<MediaStreamDescriptor> src_object_;
 
   Member<MediaError> error_;

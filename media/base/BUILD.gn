@@ -344,6 +344,13 @@ source_set("base") {
   if (is_win) {
     deps += [ "//media/base/win" ]
   }
+
+  if (enable_castanets) {
+    sources += [
+      "castanets/demuxer_stream_player_params_castanets.cc",
+      "castanets/demuxer_stream_player_params_castanets.h",
+    ]
+  }
 }
 
 source_set("video_facing") {

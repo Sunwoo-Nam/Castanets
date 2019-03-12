@@ -719,4 +719,10 @@ void WebSettingsImpl::SetMediaDownloadInProductHelpEnabled(bool enabled) {
   settings_->SetMediaDownloadInProductHelpEnabled(enabled);
 }
 
+#if defined(VIDEO_HOLE)
+void WebSettingsImpl::SetVideoHoleEnabled(bool enabled) {
+  settings_->SetVideoHoleEnabled(enabled);
+}
+#endif
+
 }  // namespace blink

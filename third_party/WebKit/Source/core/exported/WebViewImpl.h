@@ -562,6 +562,11 @@ class CORE_EXPORT WebViewImpl final
   LocalFrame* FocusedLocalFrameInWidget() const;
   LocalFrame* FocusedLocalFrameAvailableForIme() const;
 
+#if defined(VIDEO_HOLE)
+  void SetVideoHoleForRender(bool enable) override;
+  bool IsVideoHoleForRender() const override;
+#endif
+
   CompositorMutatorImpl& Mutator();
   CompositorMutatorImpl* CompositorMutator();
 

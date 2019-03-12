@@ -46,7 +46,9 @@ class CC_EXPORT VideoFrameExternalResources {
     RGBA_PREMULTIPLIED_RESOURCE,
     RGBA_RESOURCE,
     STREAM_TEXTURE_RESOURCE,
-
+#if defined(VIDEO_HOLE)
+    HOLE,
+#endif
     // TODO(danakj): Remove this and abstract TextureMailbox into
     // "ExternalResource" that can hold a hardware or software backing.
     SOFTWARE_RESOURCE

@@ -441,6 +441,10 @@ class RendererLocalSurfaceIdProvider : public viz::LocalSurfaceIdProvider {
 
 }  // namespace
 
+#if defined(CASTANETS)
+scoped_refptr<IPC::MessageFilter> CreateRendererDemuxerCastanets();
+#endif
+
 RenderThreadImpl::HistogramCustomizer::HistogramCustomizer() {
   custom_histograms_.insert("V8.MemoryExternalFragmentationTotal");
   custom_histograms_.insert("V8.MemoryHeapSampleTotalCommitted");
@@ -2352,6 +2356,10 @@ RenderThreadImpl::GetMediaThreadTaskRunner() {
   if (!media_thread_) {
     media_thread_.reset(new base::Thread("Media"));
     media_thread_->Start();
+#if defined(CASTANETS)
+    renderer_demuxer_ = CreateRendererDemuxerCastanets();
+    AddFilter(renderer_demuxer_.get());
+#endif
   }
   return media_thread_->task_runner();
 }
